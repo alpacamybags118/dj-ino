@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
+import { Interaction } from "discord.js";
 
 export interface IBotCommandReturn {
   data: any,
@@ -7,6 +8,6 @@ export interface IBotCommandReturn {
 
 export interface IBotCommand {
   buildCommand(): IBotCommandReturn
-  executeCommand(interaction: any): Promise<any>
+  executeCommand(interaction: Interaction): Promise<any>
 }
 

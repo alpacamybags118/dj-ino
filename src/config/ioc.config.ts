@@ -11,7 +11,7 @@ const container = new Container();
 
 container.bind(TYPES.CommandCollection).toConstantValue(new CommandCollection());
 container.bind<Bot>(TYPES.Bot).to(Bot).inSingletonScope();
-container.bind<Client>(TYPES.Client).toConstantValue(new Client({intents: ["GUILDS", "GUILD_MESSAGES"]}));
+container.bind<Client>(TYPES.Client).toConstantValue(new Client({intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES"]}));
 container.bind<string>(TYPES.Token).toConstantValue(process.env.TOKEN || '');
 
 export default container;

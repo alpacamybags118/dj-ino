@@ -1,12 +1,26 @@
-{
-  "name":"mimic",
-  "description":"Mimics what you say",
-  "options":[
-     {
-        "type":3,
-        "name":"data",
-        "description":"What you want said back",
-        "required":true
-     }
-  ]
-}
+[
+  {
+    "name":"mimic",
+    "description":"Mimics what you say",
+    "options":[
+      {
+          "type":3,
+          "name":"data",
+          "description":"What you want said back",
+          "required":true
+      }
+    ]
+  },
+  {
+    "name":"joinvoice",
+    "description":"Have DJ Ino join a voice channel of your choosing. You can then have Ino play music for you.",
+    "options":[
+       {
+          "type":7,
+          "name":"channel",
+          "description":"The voice channel to join",
+          "required":true
+       }
+    ]
+ }
+]

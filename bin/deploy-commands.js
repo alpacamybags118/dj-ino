@@ -4,9 +4,7 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const fs = require('fs')
 
-const commands = []
-
-commands.push(JSON.parse(fs.readFileSync('./commands.json', {encoding: 'utf-8'})));
+const commands = JSON.parse(fs.readFileSync('./commands.json', {encoding: 'utf-8'}));
 
 const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
 
