@@ -5,15 +5,17 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/index.js",
+    "start:prod": "NODE_ENV=production node dist/index.js",
     "deploy-commands": "node bin/deploy-commands.js",
     "watch": "tsc -p tsconfig.json -w",
+    "build": "tsc -p tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "alpacamybags",
   "license": "ISC",
   "dependencies": {
     "@discordjs/voice": "^0.6.0",
-    "@types/node": "^16.7.4",
+    "@types/node": "^16.7.6",
     "discord.js": "^13.1.0",
     "dotenv": "^10.0.0",
     "inversify": "^5.1.1",

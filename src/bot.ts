@@ -20,7 +20,6 @@ export default class Bot {
     this.commandList = commandList;
   }
   public async listen(): Promise<string> {
-    console.log(this.commandList.commands[1].buildCommand().data.toJSON());
     this.client.on('interactionCreate', async (interaction: any) => {
       const command = this.commandList.commands.find(x => x.buildCommand().data.toJSON().name == interaction.commandName)
 
