@@ -9,7 +9,7 @@ export default class JoinVoiceCommand implements IBotCommand{
     // todo: maybe print a custom message if they are already in channel
     // todo: how can we tell the bot to disconnect after x minutes on inactivity
     const channel = interaction.options.getChannel('channel');
-
+    console.log(channel)
     const options  = {
       channelId: channel?.id || '',
       guildId: interaction.guildId || '',

@@ -22,5 +22,31 @@
           "required":true
        }
     ]
- }
+ },
+ {
+  "name":"playtrack",
+  "description":"Have DJ Ino play a track in the voice channel he is in",
+  "options":[
+     {
+        "type":3,
+        "name":"track",
+        "description":"The URL to the track you want to play",
+        "required":true
+     }
+  ]
+},
+{
+   "name":"pause",
+   "description":"DJ Ino will pause the current track, if one is playing",
+   "options":[
+      
+   ]
+},
+{
+   "name":"resume",
+   "description":"DJ Ino will resume playing",
+   "options":[
+      
+   ]
+}
 ]

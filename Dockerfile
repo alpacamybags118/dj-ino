@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm ci && npm run build && npm prune --production
+RUN npm ci --production && npm run build && npm prune --production
 
 ENTRYPOINT ["npm", "run", "start:prod"]

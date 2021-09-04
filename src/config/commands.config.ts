@@ -2,5 +2,8 @@ import MimicCommand from "../commands/mimicCommand";
 
 export const Commands = [
   'MimicCommand',
-  'JoinVoiceCommand'
+  'JoinVoiceCommand',
+  'PlayTrackCommand',
+  'PauseTrackCommand',
+  'ResumeTrackCommand',
 ]
