@@ -1,6 +1,6 @@
 import { TYPES } from "./const/types";
 
-import { Client, Collection, Interaction, Message } from "discord.js";
+import { Client, Interaction} from "discord.js";
 import { inject, injectable } from "inversify";
 import CommandCollection from "./commandCollection";
 
@@ -20,12 +20,17 @@ export default class Bot {
     this.commandList = commandList;
   }
   public async listen(): Promise<string> {
-    console.log(this.commandList.commands[4].buildCommand().data.toJSON())
-    this.client.on('interactionCreate', async (interaction: any) => {
-      const command = this.commandList.commands.find(x => x.buildCommand().data.toJSON().name == interaction.commandName)
+    this.client.on('interactionCreate', async (interaction: Interaction) => {
+      if(interaction.isCommand()) {
+        const command = this.commandList.findCommand(interaction.commandName)
 
-      if(command) {
-        await command.executeCommand(interaction);
+        if(command) {
+          await command.executeCommand(interaction);
+        } else {
+          interaction.channel?.send('Given command was not found');
+        }
+      } else {
+        interaction.channel?.send('Interaction is not a command!');
       }
     });
 

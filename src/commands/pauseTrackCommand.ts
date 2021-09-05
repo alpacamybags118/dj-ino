@@ -5,6 +5,8 @@ import {  AudioPlayer  } from "@discordjs/voice";
 import { CommandInteraction} from "discord.js";
 
 export default class PauseTrackCommand implements IBotCommand{
+  name = 'pause';
+
   constructor(private readonly audioPlayer: AudioPlayer){}
   
   async executeCommand(interaction: CommandInteraction): Promise<any> {
@@ -15,7 +17,7 @@ export default class PauseTrackCommand implements IBotCommand{
 
   buildCommand(): IBotCommandReturn {
     const command = new SlashCommandBuilder()
-    .setName('pause')
+    .setName(this.name)
     .setDescription('DJ Ino will pause the current track, if one is playing')
 
     return {

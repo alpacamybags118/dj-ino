@@ -7,6 +7,8 @@ export interface IBotCommandReturn {
 }
 
 export interface IBotCommand {
+  name: string;
+  
   buildCommand(): IBotCommandReturn
   executeCommand(interaction: Interaction): Promise<any>
 }

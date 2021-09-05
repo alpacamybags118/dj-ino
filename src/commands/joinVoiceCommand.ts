@@ -5,6 +5,8 @@ import { DiscordGatewayAdapterCreator, entersState, joinVoiceChannel, VoiceConne
 import { CommandInteraction, Interaction, Message } from "discord.js";
 
 export default class JoinVoiceCommand implements IBotCommand{
+  name = 'joinvoice';
+
   async executeCommand(interaction: CommandInteraction): Promise<any> {
     // todo: maybe print a custom message if they are already in channel
     // todo: how can we tell the bot to disconnect after x minutes on inactivity
@@ -31,7 +33,7 @@ export default class JoinVoiceCommand implements IBotCommand{
 
   buildCommand(): IBotCommandReturn {
     const command = new SlashCommandBuilder()
-    .setName('joinvoice')
+    .setName(this.name)
     .setDescription('Have DJ Ino join a voice channel of your choosing. You can then have Ino play music for you.')
     .addChannelOption(option =>
       option.setName('channel')

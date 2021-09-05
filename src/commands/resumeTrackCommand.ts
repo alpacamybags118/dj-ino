@@ -5,6 +5,8 @@ import {  AudioPlayer  } from "@discordjs/voice";
 import { CommandInteraction} from "discord.js";
 
 export default class ResumeTrackCommand implements IBotCommand{
+  name = 'resume';
+
   constructor(private readonly audioPlayer: AudioPlayer){}
   
   async executeCommand(interaction: CommandInteraction): Promise<any> {
@@ -15,7 +17,7 @@ export default class ResumeTrackCommand implements IBotCommand{
 
   buildCommand(): IBotCommandReturn {
     const command = new SlashCommandBuilder()
-    .setName('resume')
+    .setName(this.name)
     .setDescription('DJ Ino will resume playing')
 
     return {
