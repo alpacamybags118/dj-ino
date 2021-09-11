@@ -3,15 +3,25 @@ import { IBotCommand, IBotCommandReturn } from "./iBotCommand";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import {  AudioPlayer  } from "@discordjs/voice";
 import { CommandInteraction} from "discord.js";
+import { inject, injectable } from "inversify";
+import JukeBox from "../media/jukebox";
+import { TYPES } from "../const/types";
 
+@injectable()
 export default class PauseTrackCommand implements IBotCommand{
+  private jukebox: JukeBox;
+
   name = 'pause';
 
-  constructor(private readonly audioPlayer: AudioPlayer){}
+  constructor(@inject(TYPES.Jukebox) jukebox: JukeBox){
+    this.jukebox = jukebox;
+  }
   
   async executeCommand(interaction: CommandInteraction): Promise<any> {
     interaction.reply('Pausing Audio');
-    this.audioPlayer.pause()
+    
+    this.jukebox.Pause();
+    
     return Promise.resolve('hi');
   }
 

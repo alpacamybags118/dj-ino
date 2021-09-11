@@ -13,6 +13,8 @@ import { Client } from 'discord.js'
 import CommandCollection from "../commandCollection";
 import { AudioPlayer, createAudioPlayer } from "@discordjs/voice";
 import { IBotCommand } from "../commands/iBotCommand";
+import JukeBox from "../media/jukebox";
+import YoutubeDownloader from "../media/youtubeDownloader";
 
 const container = new Container();
 
@@ -20,16 +22,18 @@ const container = new Container();
 container.bind<Client>(TYPES.Client).toConstantValue(new Client({intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES"]}));
 container.bind<string>(TYPES.Token).toConstantValue(process.env.TOKEN || '');
 
+// Media DI
+container.bind<YoutubeDownloader>(TYPES.YoutubeDownloader).to(YoutubeDownloader);
+container.bind<AudioPlayer>(TYPES.AudioPlayer).toConstantValue(createAudioPlayer());
+container.bind<JukeBox>(TYPES.Jukebox).to(JukeBox).inSingletonScope()
+
 
 // Command DI
-container.bind<AudioPlayer>(TYPES.AudioPlayer).toConstantValue(createAudioPlayer());
-container.bind<IBotCommand>(TYPES.Command).toConstantValue(new MimicCommand());
-container.bind<IBotCommand>(TYPES.Command).toConstantValue(new JoinVoiceCommand());
-container.bind<IBotCommand>(TYPES.Command).toConstantValue(new PlayTrackCommand(container.get(TYPES.AudioPlayer)));
-container.bind<IBotCommand>(TYPES.Command).toConstantValue(new PauseTrackCommand(container.get(TYPES.AudioPlayer)));
-container.bind<IBotCommand>(TYPES.Command).toConstantValue(new ResumeTrackCommand(container.get(TYPES.AudioPlayer)));
-
-
+container.bind<IBotCommand>(TYPES.Command).to(MimicCommand);
+container.bind<IBotCommand>(TYPES.Command).to(JoinVoiceCommand);
+container.bind<IBotCommand>(TYPES.Command).to(PlayTrackCommand);
+container.bind<IBotCommand>(TYPES.Command).to(PauseTrackCommand);
+container.bind<IBotCommand>(TYPES.Command).to(ResumeTrackCommand);
 container.bind(TYPES.CommandCollection).toConstantValue(new CommandCollection(container.getAll(TYPES.Command)));
 
 // Bot DI

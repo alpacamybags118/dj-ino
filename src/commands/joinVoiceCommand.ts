@@ -3,7 +3,9 @@ import { IBotCommand, IBotCommandReturn } from "./iBotCommand";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { DiscordGatewayAdapterCreator, entersState, joinVoiceChannel, VoiceConnectionStatus } from "@discordjs/voice";
 import { CommandInteraction, Interaction, Message } from "discord.js";
+import { injectable } from "inversify";
 
+@injectable()
 export default class JoinVoiceCommand implements IBotCommand{
   name = 'joinvoice';
 

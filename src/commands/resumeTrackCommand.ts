@@ -1,17 +1,23 @@
 import { IBotCommand, IBotCommandReturn } from "./iBotCommand";
 
 import { SlashCommandBuilder } from "@discordjs/builders";
-import {  AudioPlayer  } from "@discordjs/voice";
 import { CommandInteraction} from "discord.js";
+import JukeBox from "../media/jukebox";
+import { TYPES } from "../const/types";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export default class ResumeTrackCommand implements IBotCommand{
+  private jukebox: JukeBox
   name = 'resume';
 
-  constructor(private readonly audioPlayer: AudioPlayer){}
+  constructor(@inject(TYPES.Jukebox) jukebox: JukeBox){
+    this.jukebox = jukebox;
+  }
   
   async executeCommand(interaction: CommandInteraction): Promise<any> {
     interaction.reply('Resuming Audio');
-    this.audioPlayer.unpause()
+    this.jukebox.Unpause();
     return Promise.resolve('hi');
   }
 

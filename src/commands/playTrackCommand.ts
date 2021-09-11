@@ -1,33 +1,34 @@
 import { IBotCommand, IBotCommandReturn } from "./iBotCommand";
 
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { getVoiceConnection, createAudioResource, AudioPlayer, demuxProbe  } from "@discordjs/voice";
+import { getVoiceConnection, createAudioResource, AudioPlayer, demuxProbe, AudioPlayerStatus  } from "@discordjs/voice";
 import { CommandInteraction} from "discord.js";
 import YoutubeDownloader from "../media/youtubeDownloader";
+import { inject, injectable } from "inversify";
+import JukeBox from "../media/jukebox";
+import { TYPES } from "../const/types";
 
+@injectable()
 export default class PlayTrackCommand implements IBotCommand{
+  private jukebox: JukeBox
+
   name = 'playtrack';
 
-  constructor(private readonly audioPlayer: AudioPlayer){}
+  constructor(@inject(TYPES.Jukebox) jukeBox: JukeBox){
+    this.jukebox = jukeBox;
+  }
   
   async executeCommand(interaction: CommandInteraction, ): Promise<any> {
     const connection = getVoiceConnection(interaction.guildId || '');
     const track = interaction.options.getString('track') || ''
-    const ytdl = new YoutubeDownloader();
 
     if (connection == undefined) {
       interaction.reply('DJ Ino is not connected to a voice channel!');
       return Promise.reject('no good');
     }
 
-    connection.subscribe(this.audioPlayer);
-
-    const audioStream = await ytdl.createAudioResource(track);
-
-    console.log('Got process');
-
-    interaction.reply(`Playing ${track}`)
-    this.audioPlayer.play(audioStream);
+    this.jukebox.subscribeToJukebox(connection);
+    this.jukebox.PlayTrack(track)
     return Promise.resolve('hi');
   }
 

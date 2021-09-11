@@ -4,5 +4,7 @@ export const TYPES = {
   Token: Symbol("Token"),
   Command: Symbol('Command'),
   CommandCollection: Symbol('CommandCollection'),
+  Jukebox: Symbol('Jukebox'),
   AudioPlayer: Symbol('AudioPlayer'),
+  YoutubeDownloader: Symbol('YoutubeDownloader'),
 };

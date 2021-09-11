@@ -1,8 +1,10 @@
 import { IBotCommand, IBotCommandReturn } from "./iBotCommand";
 
 import { SlashCommandBuilder } from "@discordjs/builders";
+import { injectable } from "inversify";
 
 // todo: maybe make these configs load from the command json instead of having to put them in 2 places?
+@injectable()
 export default class MimicCommand implements IBotCommand{
   name = 'mimic';
 

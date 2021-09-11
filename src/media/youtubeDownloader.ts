@@ -1,6 +1,8 @@
 import { AudioResource, createAudioResource, demuxProbe } from '@discordjs/voice';
+import { injectable } from 'inversify';
 import {raw} from 'youtube-dl-exec';
 
+@injectable()
 export default class YoutubeDownloader {
   constructor(){}
   // this is copy + paste code from the library examples. need to understand it fully so i can make it better/ easier to read
