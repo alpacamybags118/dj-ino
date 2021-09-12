@@ -10,6 +10,6 @@ export interface IBotCommand {
   name: string;
   
   buildCommand(): IBotCommandReturn
-  executeCommand(interaction: Interaction): Promise<any>
+  executeCommand(interaction: Interaction): Promise<void>
 }
 

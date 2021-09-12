@@ -1,35 +1,55 @@
 import { IBotCommand, IBotCommandReturn } from "./iBotCommand";
 
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { getVoiceConnection, createAudioResource, AudioPlayer, demuxProbe, AudioPlayerStatus  } from "@discordjs/voice";
-import { CommandInteraction} from "discord.js";
-import YoutubeDownloader from "../media/youtubeDownloader";
+import { getVoiceConnection} from "@discordjs/voice";
+import { Client, CommandInteraction} from "discord.js";
 import { inject, injectable } from "inversify";
 import JukeBox from "../media/jukebox";
 import { TYPES } from "../const/types";
+import Track from "../media/track";
 
 @injectable()
-export default class PlayTrackCommand implements IBotCommand{
+export default class PlayTrackCommand implements IBotCommand {
+  private client: Client
   private jukebox: JukeBox
 
   name = 'playtrack';
 
-  constructor(@inject(TYPES.Jukebox) jukeBox: JukeBox){
+  constructor(
+    @inject(TYPES.Client) client: Client,
+    @inject(TYPES.Jukebox) jukeBox: JukeBox
+    ){
+    this.client = client;
     this.jukebox = jukeBox;
   }
   
-  async executeCommand(interaction: CommandInteraction, ): Promise<any> {
+  async executeCommand(interaction: CommandInteraction, ): Promise<void> {
     const connection = getVoiceConnection(interaction.guildId || '');
-    const track = interaction.options.getString('track') || ''
-
+    const trackUrl = interaction.options.getString('track') || ''
+    console.log(connection);
     if (connection == undefined) {
       interaction.reply('DJ Ino is not connected to a voice channel!');
-      return Promise.reject('no good');
+      return;
     }
 
+    interaction.reply('Adding track to queue.');
+    const track = new Track(trackUrl,
+      async () => {
+        this.client.user?.setPresence({
+          activities: [{
+            name: `to ${track.url}`,
+            type: 'LISTENING'
+          }
+          ]
+        })
+        await interaction.followUp(`Playing ${trackUrl}`)
+      },
+      async () => {
+        await interaction.followUp(`Finished ${trackUrl}`)
+      })
+
     this.jukebox.subscribeToJukebox(connection);
-    this.jukebox.PlayTrack(track)
-    return Promise.resolve('hi');
+    this.jukebox.PlayTrack(track);
   }
 
   buildCommand(): IBotCommandReturn {

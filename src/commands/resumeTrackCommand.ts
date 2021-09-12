@@ -15,10 +15,9 @@ export default class ResumeTrackCommand implements IBotCommand{
     this.jukebox = jukebox;
   }
   
-  async executeCommand(interaction: CommandInteraction): Promise<any> {
-    interaction.reply('Resuming Audio');
+  async executeCommand(interaction: CommandInteraction): Promise<void> {
+    interaction.reply('Resuming Track.');
     this.jukebox.Unpause();
-    return Promise.resolve('hi');
   }
 
   buildCommand(): IBotCommandReturn {

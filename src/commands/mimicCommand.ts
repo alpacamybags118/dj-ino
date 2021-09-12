@@ -8,7 +8,7 @@ import { injectable } from "inversify";
 export default class MimicCommand implements IBotCommand{
   name = 'mimic';
 
-  async executeCommand(interaction: any): Promise<any> {
+  async executeCommand(interaction: any): Promise<void> {
       await interaction.reply('test');
   }
 

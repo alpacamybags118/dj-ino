@@ -1,15 +1,16 @@
 import { AudioResource, createAudioResource, demuxProbe } from '@discordjs/voice';
 import { injectable } from 'inversify';
 import {raw} from 'youtube-dl-exec';
+import Track from './track';
 
 @injectable()
 export default class YoutubeDownloader {
   constructor(){}
   // this is copy + paste code from the library examples. need to understand it fully so i can make it better/ easier to read
-  createAudioResource(uri: string): Promise<AudioResource> {
+  createAudioResource(track: Track): Promise<AudioResource<Track>> {
     return new Promise((resolve, reject) => {
 			const process = raw(
-				uri,
+				track.url,
 				{
 					o: '-',
 					q: '',
@@ -31,7 +32,7 @@ export default class YoutubeDownloader {
 			process
 				.once('spawn', () => {
 					demuxProbe(stream)
-						.then((probe) => resolve(createAudioResource(probe.stream, { metadata: this, inputType: probe.type })))
+						.then((probe) => resolve(createAudioResource(probe.stream, { metadata: track, inputType: probe.type })))
 						.catch(onError);
 				})
 				.catch(onError);

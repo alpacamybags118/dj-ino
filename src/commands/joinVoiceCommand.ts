@@ -1,7 +1,7 @@
 import { IBotCommand, IBotCommandReturn } from "./iBotCommand";
 
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { DiscordGatewayAdapterCreator, entersState, joinVoiceChannel, VoiceConnectionStatus } from "@discordjs/voice";
+import { DiscordGatewayAdapterCreator, entersState, joinVoiceChannel, VoiceConnectionState, VoiceConnectionStatus } from "@discordjs/voice";
 import { CommandInteraction, Interaction, Message } from "discord.js";
 import { injectable } from "inversify";
 
@@ -9,9 +9,10 @@ import { injectable } from "inversify";
 export default class JoinVoiceCommand implements IBotCommand{
   name = 'joinvoice';
 
-  async executeCommand(interaction: CommandInteraction): Promise<any> {
+  async executeCommand(interaction: CommandInteraction): Promise<void> {
     // todo: maybe print a custom message if they are already in channel
     // todo: how can we tell the bot to disconnect after x minutes on inactivity
+    // BUG - if joins voicechat via this command and is manually disconnected, it still considered itself joined in a connection
     const channel = interaction.options.getChannel('channel');
     console.log(channel)
     const options  = {
@@ -22,11 +23,16 @@ export default class JoinVoiceCommand implements IBotCommand{
 
     const connection = joinVoiceChannel(options)
 
+    connection.on('stateChange', (oldState: VoiceConnectionState, newState: VoiceConnectionState) => {
+      if(newState.status == VoiceConnectionStatus.Disconnected) {
+        console.log('destroying connection');
+        connection.destroy();
+      }
+    })
+
     try {
       await entersState(connection, VoiceConnectionStatus.Ready, 30e3)
       await interaction.reply('Joining channel!');
-
-      return Promise.resolve('hi')
     }
     catch(err) {
       connection.destroy();

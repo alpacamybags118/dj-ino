@@ -17,12 +17,10 @@ export default class PauseTrackCommand implements IBotCommand{
     this.jukebox = jukebox;
   }
   
-  async executeCommand(interaction: CommandInteraction): Promise<any> {
-    interaction.reply('Pausing Audio');
+  async executeCommand(interaction: CommandInteraction): Promise<void> {
+    interaction.reply('Pausing Track.');
     
     this.jukebox.Pause();
-    
-    return Promise.resolve('hi');
   }
 
   buildCommand(): IBotCommandReturn {
