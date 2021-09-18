@@ -48,5 +48,19 @@
    "options":[
       
    ]
+},
+{
+  "name":"listqueue",
+  "description":"DJ Ino will list all tracks currently in the queue.",
+  "options":[
+     
+  ]
+},
+{
+  "name":"skip",
+  "description":"DJ Ino will skip the current track and play the next track in the queue.",
+  "options":[
+     
+  ]
 }
 ]

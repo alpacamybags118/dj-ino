@@ -7,4 +7,5 @@ export const TYPES = {
   Jukebox: Symbol('Jukebox'),
   AudioPlayer: Symbol('AudioPlayer'),
   YoutubeDownloader: Symbol('YoutubeDownloader'),
+  TrackQueue: Symbol('TrackQueue'),
 };

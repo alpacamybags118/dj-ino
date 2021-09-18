@@ -15,6 +15,9 @@ import { AudioPlayer, createAudioPlayer } from "@discordjs/voice";
 import { IBotCommand } from "../commands/iBotCommand";
 import JukeBox from "../media/jukebox";
 import YoutubeDownloader from "../media/youtubeDownloader";
+import ListQueueCommand from "../commands/listQueueCommand";
+import SkipTrackCommand from "../commands/skipTrackCommand";
+import TrackQueue from "../media/trackQueue";
 
 const container = new Container();
 
@@ -25,6 +28,7 @@ container.bind<string>(TYPES.Token).toConstantValue(process.env.TOKEN || '');
 // Media DI
 container.bind<YoutubeDownloader>(TYPES.YoutubeDownloader).to(YoutubeDownloader);
 container.bind<AudioPlayer>(TYPES.AudioPlayer).toConstantValue(createAudioPlayer());
+container.bind<TrackQueue>(TYPES.TrackQueue).to(TrackQueue).inSingletonScope();
 container.bind<JukeBox>(TYPES.Jukebox).to(JukeBox).inSingletonScope()
 
 
@@ -34,6 +38,10 @@ container.bind<IBotCommand>(TYPES.Command).to(JoinVoiceCommand);
 container.bind<IBotCommand>(TYPES.Command).to(PlayTrackCommand);
 container.bind<IBotCommand>(TYPES.Command).to(PauseTrackCommand);
 container.bind<IBotCommand>(TYPES.Command).to(ResumeTrackCommand);
+container.bind<IBotCommand>(TYPES.Command).to(ListQueueCommand);
+container.bind<IBotCommand>(TYPES.Command).to(SkipTrackCommand);
+
+
 container.bind(TYPES.CommandCollection).toConstantValue(new CommandCollection(container.getAll(TYPES.Command)));
 
 // Bot DI

@@ -37,7 +37,7 @@ export default class PlayTrackCommand implements IBotCommand {
       async () => {
         this.client.user?.setPresence({
           activities: [{
-            name: `to ${track.url}`,
+            name: `${track.url}`,
             type: 'LISTENING'
           }
           ]
@@ -45,6 +45,7 @@ export default class PlayTrackCommand implements IBotCommand {
         await interaction.followUp(`Playing ${trackUrl}`)
       },
       async () => {
+        this.client.user?.setPresence({activities: undefined});
         await interaction.followUp(`Finished ${trackUrl}`)
       })
 
