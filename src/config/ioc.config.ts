@@ -18,6 +18,7 @@ import YoutubeDownloader from "../media/youtubeDownloader";
 import ListQueueCommand from "../commands/listQueueCommand";
 import SkipTrackCommand from "../commands/skipTrackCommand";
 import TrackQueue from "../media/trackQueue";
+import YoutubeSearch from "../media/youtubeSearch";
 
 const container = new Container();
 
@@ -30,6 +31,8 @@ container.bind<YoutubeDownloader>(TYPES.YoutubeDownloader).to(YoutubeDownloader)
 container.bind<AudioPlayer>(TYPES.AudioPlayer).toConstantValue(createAudioPlayer());
 container.bind<TrackQueue>(TYPES.TrackQueue).to(TrackQueue).inSingletonScope();
 container.bind<JukeBox>(TYPES.Jukebox).to(JukeBox).inSingletonScope()
+container.bind<YoutubeSearch>(TYPES.YoutubeSearch).to(YoutubeSearch).inSingletonScope()
+
 
 
 // Command DI

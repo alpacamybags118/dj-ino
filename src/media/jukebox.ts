@@ -1,5 +1,4 @@
 import { AudioPlayer, AudioPlayerState, AudioPlayerStatus, AudioResource, VoiceConnection } from "@discordjs/voice"
-import { throws } from "assert"
 import { inject, injectable } from "inversify"
 import { TYPES } from "../const/types"
 import Track from "./track"
@@ -50,12 +49,16 @@ export default class JukeBox {
     connection.subscribe(this.audioPlayer);
   }
 
+  public AddPlaylist(tracks: Track[]) {
+    tracks.forEach((track) => this.Enqueue(track));
+
+    this.StartJukeBoxIfIdle();
+  }
+
   public PlayTrack(track: Track): void {
     this.Enqueue(track);
 
-    if(this.audioPlayer.state.status == AudioPlayerStatus.Idle) {
-      this.PlayNextInQueue();
-    }
+    this.StartJukeBoxIfIdle();
   }
 
   public Pause(): void {
@@ -72,5 +75,11 @@ export default class JukeBox {
 
   public Skip(): void {
     this.audioPlayer.stop();
+  }
+
+  private StartJukeBoxIfIdle(): void {
+    if(this.audioPlayer.state.status == AudioPlayerStatus.Idle) {
+      this.PlayNextInQueue();
+    }
   }
 }
