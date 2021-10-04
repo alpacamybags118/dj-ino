@@ -8,6 +8,7 @@ import JukeBox from "../media/jukebox";
 import { TYPES } from "../const/types";
 import Track from "../media/track";
 import YoutubeSearch from "../media/youtubeSearch";
+import YouTubeMetadata, { YoutubeMetadata } from "../media/youtubeMetadata";
 
 @injectable()
 export default class PlayTrackCommand implements IBotCommand {
@@ -41,10 +42,15 @@ export default class PlayTrackCommand implements IBotCommand {
     if(YoutubeSearch.isPlaylistUrl(url)) {
       interaction.reply('Playlist detected. Adding all tracks to queue');
       const videoIds = await this.youtubeSearch.getVideosFromPlaylist(url);
-
+      
+      //TODO: make this work
       const tracks = videoIds.map((id) => {
         const trackUrl = `https://www.youtube.com/watch?v=${id}`
-        return this.createTrack(trackUrl, interaction);
+        const trackMetadata = {
+          title: 'test',
+          thumbnails: {},
+        }
+        return this.createTrack(trackUrl, interaction, trackMetadata);
       });
 
       this.jukebox.AddPlaylist(tracks);
@@ -52,7 +58,17 @@ export default class PlayTrackCommand implements IBotCommand {
     }
 
     interaction.reply('Adding track to queue.');
-    const track = this.createTrack(url, interaction);
+
+    //TODO: two types of yt urls, move this code
+    let id = ''
+    const urlPart = url.split('=')
+    if(urlPart.length == 1) {
+      id = url.split('.be/')[1]
+    } else {
+      id = urlPart[1]
+    }
+    const trackMetadata = await YouTubeMetadata.GetMetadataForVideo(id);
+    const track = this.createTrack(url, interaction, trackMetadata);
 
 
     this.jukebox.PlayTrack(track);
@@ -61,22 +77,23 @@ export default class PlayTrackCommand implements IBotCommand {
   }
 
   // TODO: move this code somewhere else
-  private createTrack(url: string, interaction: CommandInteraction): Track {
+  private createTrack(url: string, interaction: CommandInteraction, metadata: YoutubeMetadata): Track {
     const track = new Track(url,
       async () => {
         this.client.user?.setPresence({
           activities: [{
-            name: `${track.url}`,
+            name: `${track.metadata.title}`,
             type: 'LISTENING'
           }
           ]
         })
-        await interaction.followUp(`Playing ${url}`)
+        await interaction.followUp(`Playing ${track.metadata.title} \
+        ${track.url}`)
       },
       async () => {
         this.client.user?.setPresence({activities: undefined});
-        await interaction.followUp(`Finished ${url}`)
-      });
+        await interaction.followUp(`Finished ${track.metadata.title}`)
+      }, metadata);
 
       return track;
   }
