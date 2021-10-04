@@ -87,13 +87,13 @@ export default class PlayTrackCommand implements IBotCommand {
           }
           ]
         })
-        await interaction.followUp(`Playing ${track.metadata.title} \
+        await track.interaction.followUp(`Playing ${track.metadata.title} \
         ${track.url}`)
       },
       async () => {
         this.client.user?.setPresence({activities: undefined});
-        await interaction.followUp(`Finished ${track.metadata.title}`)
-      }, metadata);
+        await track.interaction.followUp(`Finished ${track.metadata.title}`)
+      }, metadata, interaction);
 
       return track;
   }
