@@ -23,7 +23,7 @@ export default class JukeBox {
     // configure audioplayer lifecycle
     this.audioPlayer.on("stateChange", (oldState: AudioPlayerState, newState: AudioPlayerState)=> {
       if(newState.status == AudioPlayerStatus.Idle && oldState.status != AudioPlayerStatus.Idle) {
-        (oldState.resource as AudioResource<Track>).metadata.onEnd();
+        (oldState.resource as AudioResource<Track>).metadata.OnEnd();
         this.PlayNextInQueue();
       }
     })
@@ -35,7 +35,7 @@ export default class JukeBox {
 
       if(track != undefined) {
         const audioStream = await this.youtubeDownloader.createAudioResource(track);
-        track.onStart()
+        track.OnStart()
         this.audioPlayer.play(audioStream);
       }
     }

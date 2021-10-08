@@ -50,7 +50,7 @@ export default class PlayTrackCommand implements IBotCommand {
           title: 'test',
           thumbnails: {},
         }
-        return this.createTrack(trackUrl, interaction, trackMetadata);
+        return new Track(trackUrl, trackMetadata, interaction, this.client);
       });
 
       this.jukebox.AddPlaylist(tracks);
@@ -68,7 +68,7 @@ export default class PlayTrackCommand implements IBotCommand {
       id = urlPart[1]
     }
     const trackMetadata = await YouTubeMetadata.GetMetadataForVideo(id);
-    const track = this.createTrack(url, interaction, trackMetadata);
+    const track = new Track(url, trackMetadata, interaction,  this.client);
 
 
     this.jukebox.PlayTrack(track);
@@ -76,27 +76,6 @@ export default class PlayTrackCommand implements IBotCommand {
     return;
   }
 
-  // TODO: move this code somewhere else
-  private createTrack(url: string, interaction: CommandInteraction, metadata: YoutubeMetadata): Track {
-    const track = new Track(url,
-      async () => {
-        this.client.user?.setPresence({
-          activities: [{
-            name: `${track.metadata.title}`,
-            type: 'LISTENING'
-          }
-          ]
-        })
-        await track.interaction.followUp(`Playing ${track.metadata.title} \
-        ${track.url}`)
-      },
-      async () => {
-        this.client.user?.setPresence({activities: undefined});
-        await track.interaction.followUp(`Finished ${track.metadata.title}`)
-      }, metadata, interaction);
-
-      return track;
-  }
 
   buildCommand(): IBotCommandReturn {
     const command = new SlashCommandBuilder()
