@@ -8,7 +8,6 @@ import JukeBox from "../media/jukebox";
 import { TYPES } from "../const/types";
 import Track from "../media/track";
 import YoutubeSearch from "../media/youtubeSearch";
-import YouTubeMetadata, { YoutubeMetadata } from "../media/youtubeMetadata";
 
 @injectable()
 export default class PlayTrackCommand implements IBotCommand {
@@ -29,9 +28,18 @@ export default class PlayTrackCommand implements IBotCommand {
   }
   
   async executeCommand(interaction: CommandInteraction, ): Promise<void> {
-    const connection = getVoiceConnection(interaction.guildId || '');
-    const url = interaction.options.getString('track') || ''
-    console.log(connection);
+    let url;
+
+    const connection = getVoiceConnection(interaction.guildId);
+
+    try {
+      url = interaction.options.getString('track', true);
+    } catch(e) {
+      interaction.reply('URL was not provided or could not be processed. Please try again.');
+      console.log(e)
+      return;
+    }
+
     if (connection == undefined) {
       interaction.reply('DJ Ino is not connected to a voice channel!');
       return;
@@ -41,35 +49,16 @@ export default class PlayTrackCommand implements IBotCommand {
 
     if(YoutubeSearch.isPlaylistUrl(url)) {
       interaction.reply('Playlist detected. Adding all tracks to queue');
-      const videoIds = await this.youtubeSearch.getVideosFromPlaylist(url);
+      const videos = await this.youtubeSearch.getVideosFromPlaylist(url);
       
-      //TODO: make this work
-      const tracks = videoIds.map((id) => {
-        const trackUrl = `https://www.youtube.com/watch?v=${id}`
-        const trackMetadata = {
-          title: 'test',
-          thumbnails: {},
-        }
-        return new Track(trackUrl, trackMetadata, interaction, this.client);
-      });
-
-      this.jukebox.AddPlaylist(tracks);
+      this.jukebox.AddPlaylist(videos.map((video) => {return new Track(video.url ,video.metadata,
+        interaction, this.client.user)}));
       return;
     }
 
     interaction.reply('Adding track to queue.');
-
-    //TODO: two types of yt urls, move this code
-    let id = ''
-    const urlPart = url.split('=')
-    if(urlPart.length == 1) {
-      id = url.split('.be/')[1]
-    } else {
-      id = urlPart[1]
-    }
-    const trackMetadata = await YouTubeMetadata.GetMetadataForVideo(id);
-    const track = new Track(url, trackMetadata, interaction,  this.client);
-
+    const youtubeTrack = await this.youtubeSearch.getVideoFromUrl(url);
+    const track = new Track(youtubeTrack.url, youtubeTrack.metadata, interaction,  this.client.user);
 
     this.jukebox.PlayTrack(track);
 

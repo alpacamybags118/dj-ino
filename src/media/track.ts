@@ -1,21 +1,21 @@
-import { Client, CommandInteraction } from "discord.js";
+import { ClientUser, CommandInteraction } from "discord.js";
 import { YoutubeMetadata } from "./youtubeMetadata";
 
 export default class Track {
   url: string;
   metadata: YoutubeMetadata;
   interaction: CommandInteraction;
-  client: Client;
+  user: ClientUser;
 
-  constructor(url: string, metadata: YoutubeMetadata, interaction: CommandInteraction, client: Client) {
+  constructor(url: string, metadata: YoutubeMetadata, interaction: CommandInteraction, user: ClientUser) {
     this.url = url;
     this.metadata = metadata;
     this.interaction = interaction;
-    this.client = client;
+    this.user = user;
   }
 
   public async OnStart(): Promise<void> {
-    this.client.user?.setPresence({
+    this.user.setPresence({
       activities: [{
         name: `${this.metadata.title}`,
         type: 'LISTENING'
@@ -27,7 +27,7 @@ export default class Track {
   }
 
   public async OnEnd(): Promise<void> {
-    this.client.user?.setPresence({activities: undefined});
+    this.user.setPresence({activities: undefined});
     await this.interaction.channel.send(`Finished ${this.metadata.title}`)
   }
 }
