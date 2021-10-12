@@ -1,5 +1,7 @@
 import { injectable } from "inversify";
 import fetch, { Response } from 'node-fetch'
+import YouTubeMetadataFetcher, { YoutubeMetadata } from "./youtubeMetadata";
+import YoutubeVideo from "./youtubeVideo";
 
 interface YoutubePlaylistItem {
   kind: string,
@@ -19,13 +21,30 @@ export default class YoutubeSearch {
     return url.includes('playlist');
   }
 
-  public async getVideosFromPlaylist(playlistUrl: string): Promise<string[]> {
+  public async getVideosFromPlaylist(playlistUrl: string): Promise<YoutubeVideo[]> {
     const playListId = this.parsePlaylistId(playlistUrl);
 
-    const playlistVideos = await this.GetYoutubePlaylistData(playListId)
-    console.log(playlistVideos.length)
+    const playlistVideos = await this.GetYoutubePlaylistData(playListId);
+    const videoMetadata = await Promise.all(playlistVideos.map((video) => YouTubeMetadataFetcher.GetMetadataForVideo(video.contentDetails.videoId)));
+    // handle metadata not returning
+    return playlistVideos.map((video, index) => {
+      return {
+        url: `https://www.youtube.com/watch?v=${video.contentDetails.videoId}`,
+        metadata: videoMetadata[index],
+      } as unknown as YoutubeVideo
+    }) as YoutubeVideo[]
+  }
 
-    return playlistVideos.map((item) => item.contentDetails.videoId);
+  public async getVideoFromUrl(videoUrl: string): Promise<YoutubeVideo> {
+    const videoId = this.ParseVideoIdFromUrl(videoUrl)
+
+    return await YouTubeMetadataFetcher.GetMetadataForVideo(videoId)
+      .then((metadata: YoutubeMetadata) => {
+        return {
+        url: videoUrl,
+        metadata: metadata,
+      } as YoutubeVideo
+    })
   }
 
   private parsePlaylistId(playlistUrl: string): string {
@@ -38,5 +57,15 @@ export default class YoutubeSearch {
     return fetch(playlistUrl)
       .then((response: Response) => response.json() as any)
       .then((data) => data.items as YoutubePlaylistItem[]);
+  }
+
+  // Accounting for two types of youtube urls that could come in
+  private ParseVideoIdFromUrl(videoUrl: string): string {
+    const urlPart = videoUrl.split('=')
+    if(urlPart.length == 1) {
+      return videoUrl.split('.be/')[1]
+    } else {
+      return urlPart[1]
+    }
   }
 }
