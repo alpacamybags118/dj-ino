@@ -1,6 +1,6 @@
 FROM node:16.8.0-alpine
 
-RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
+RUN apk add --update --no-cache python3 procps && ln -sf python3 /usr/bin/python
 
 WORKDIR /app
 

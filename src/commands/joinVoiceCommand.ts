@@ -5,6 +5,7 @@ import { DiscordGatewayAdapterCreator, entersState, joinVoiceChannel, VoiceConne
 import { Client, CommandInteraction} from "discord.js";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../const/types";
+import YoutubeDownloader from "../media/youtubeDownloader";
 
 @injectable()
 export default class JoinVoiceCommand implements IBotCommand{
@@ -35,6 +36,7 @@ export default class JoinVoiceCommand implements IBotCommand{
       if(newState.status == VoiceConnectionStatus.Disconnected) {
         console.log('destroying connection');
         this.client.user.setPresence({activities: undefined});
+        YoutubeDownloader.CleanUpAudioResource()
         connection.destroy();
       }
     })

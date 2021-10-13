@@ -2,11 +2,11 @@ import { AudioResource, createAudioResource, demuxProbe } from '@discordjs/voice
 import { injectable } from 'inversify';
 import {raw} from 'youtube-dl-exec';
 import Track from './track';
+import { exec } from 'child_process'
 
 @injectable()
 export default class YoutubeDownloader {
   constructor(){}
-  // this is copy + paste code from the library examples. need to understand it fully so i can make it better/ easier to read
   createAudioResource(track: Track): Promise<AudioResource<Track>> {
     return new Promise((resolve, reject) => {
 			const process = raw(
@@ -37,5 +37,21 @@ export default class YoutubeDownloader {
 				})
 				.catch(onError);
 		});
+	}
+
+	static async CleanUpAudioResource(): Promise<void> {
+		return new Promise((resolve, reject) => {
+			exec('ps -C youtube-dl -o pid=', (err, stdout, stderr) => {
+				if (err) {
+					// not too worried if we error here, but log it
+					console.log(err)
+				}
+
+				if(stdout) {
+					process.kill(stdout as unknown as number)
+					resolve()
+				}
+			})
+		})
 	}
 }

@@ -24,4 +24,8 @@ export default class TrackQueue {
   GetCurrentQueue(): Track[] {
     return this.queue;
   }
+
+  Clear(): void {
+    this.queue = [];
+  }
 }

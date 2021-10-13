@@ -77,6 +77,10 @@ export default class JukeBox {
     this.audioPlayer.stop();
   }
 
+  public ClearQueue(): void {
+    this.queue.Clear();
+  }
+
   private StartJukeBoxIfIdle(): void {
     if(this.audioPlayer.state.status == AudioPlayerStatus.Idle) {
       this.PlayNextInQueue();
