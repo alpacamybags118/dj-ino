@@ -12,7 +12,6 @@ export default class YouTubeMetadata {
     return fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         return data.items[0].snippet as YoutubeMetadata;
       })
   }

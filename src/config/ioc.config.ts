@@ -19,8 +19,12 @@ import ListQueueCommand from "../commands/listQueueCommand";
 import SkipTrackCommand from "../commands/skipTrackCommand";
 import TrackQueue from "../media/trackQueue";
 import YoutubeSearch from "../media/youtubeSearch";
+import Logger from "../utility/logger";
 
 const container = new Container();
+
+// Utility DI
+container.bind<Logger>(TYPES.Logger).to(Logger).inSingletonScope()
 
 // Discord specific objects
 container.bind<Client>(TYPES.Client).toConstantValue(new Client({intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES"]}));

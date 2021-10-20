@@ -1,24 +1,29 @@
 import { AudioPlayer, AudioPlayerState, AudioPlayerStatus, AudioResource, VoiceConnection } from "@discordjs/voice"
 import { inject, injectable } from "inversify"
 import { TYPES } from "../const/types"
+import Logger from "../utility/logger"
 import Track from "./track"
 import TrackQueue from "./trackQueue"
 import YoutubeDownloader from "./youtubeDownloader"
 
 @injectable()
 export default class JukeBox {
-  private readonly audioPlayer: AudioPlayer
-  private readonly youtubeDownloader: YoutubeDownloader
-  private readonly queue: TrackQueue
+  private readonly audioPlayer: AudioPlayer;
+  private readonly youtubeDownloader: YoutubeDownloader;
+  private readonly queue: TrackQueue;
+  private readonly logger: Logger;
 
   constructor(
     @inject(TYPES.AudioPlayer) audioPlayer: AudioPlayer,
     @inject(TYPES.YoutubeDownloader) youtubeDownloader: YoutubeDownloader,
     @inject(TYPES.TrackQueue) trackQueue: TrackQueue,
+    @inject(TYPES.Logger) logger: Logger,
+
   ) {
     this.audioPlayer = audioPlayer;
     this.youtubeDownloader = youtubeDownloader;
     this.queue = trackQueue;
+    this.logger = logger;
 
     // configure audioplayer lifecycle
     this.audioPlayer.on("stateChange", (oldState: AudioPlayerState, newState: AudioPlayerState)=> {
@@ -46,6 +51,7 @@ export default class JukeBox {
   }
 
   public subscribeToJukebox(connection: VoiceConnection): void {
+    this.logger.Info('starting jukebox');
     connection.subscribe(this.audioPlayer);
   }
 

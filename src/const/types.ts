@@ -9,4 +9,5 @@ export const TYPES = {
   YoutubeDownloader: Symbol('YoutubeDownloader'),
   TrackQueue: Symbol('TrackQueue'),
   YoutubeSearch: Symbol('YoutubeSearch'),
+  Logger: Symbol('Logger'),
 };

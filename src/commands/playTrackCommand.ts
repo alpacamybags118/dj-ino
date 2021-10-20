@@ -58,6 +58,7 @@ export default class PlayTrackCommand implements IBotCommand {
 
     interaction.reply('Adding track to queue.');
     const youtubeTrack = await this.youtubeSearch.getVideoFromUrl(url);
+    console.log(youtubeTrack);
     const track = new Track(youtubeTrack.url, youtubeTrack.metadata, interaction,  this.client.user);
 
     this.jukebox.PlayTrack(track);
