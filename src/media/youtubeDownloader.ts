@@ -1,6 +1,6 @@
 import { AudioResource, createAudioResource, demuxProbe } from '@discordjs/voice';
 import { injectable } from 'inversify';
-import {raw} from 'youtube-dl-exec';
+import createYtDlpAsProcess from '@alpacamybags118/yt-dlp-exec'
 import Track from './track';
 import { exec } from 'child_process'
 
@@ -9,15 +9,15 @@ export default class YoutubeDownloader {
   constructor(){}
   createAudioResource(track: Track): Promise<AudioResource<Track>> {
     return new Promise((resolve, reject) => {
-			const process = raw(
+			const process = createYtDlpAsProcess(
 				track.url,
 				{
 					o: '-',
 					q: '',
-					f: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio',
+					f: 'bestaudio',
+					preferFreeFormats: true,
 					r: '100K',
-				},
-				{ stdio: ['ignore', 'pipe', 'ignore'] },
+				}
 			);
 			if (!process.stdout) {
 				reject(new Error('No stdout'));
