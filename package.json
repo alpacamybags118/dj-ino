@@ -17,7 +17,7 @@
   "author": "alpacamybags",
   "license": "ISC",
   "dependencies": {
-    "@alpacamybags118/yt-dlp-exec": "^0.0.2",
+    "@alpacamybags118/yt-dlp-exec": "^0.0.6",
     "@discordjs/voice": "^0.6.0",
     "@types/node": "^16.11.1",
     "discord.js": "^13.2.0",
