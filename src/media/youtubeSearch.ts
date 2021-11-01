@@ -22,9 +22,18 @@ export default class YoutubeSearch {
   }
 
   public async getVideosFromPlaylist(playlistUrl: string): Promise<YoutubeVideo[]> {
+    if(!YoutubeSearch.isPlaylistUrl(playlistUrl)) {
+      throw new Error(`${playlistUrl} is not a valid playlist url`);
+    }
+
     const playListId = this.parsePlaylistId(playlistUrl);
 
     const playlistVideos = await this.GetYoutubePlaylistData(playListId);
+
+    if(!playlistVideos || playlistVideos.length === 0) {
+      throw new Error('Playlist URL was invalid or contained no videos');
+    };
+    
     const videoMetadata = await Promise.all(playlistVideos.map((video) => YouTubeMetadataFetcher.GetMetadataForVideo(video.contentDetails.videoId)));
     // handle metadata not returning
     return playlistVideos.map((video, index) => {
@@ -53,10 +62,9 @@ export default class YoutubeSearch {
 
   private async GetYoutubePlaylistData(playlistID: string): Promise<YoutubePlaylistItem[]> {
     const playlistUrl = `${process.env.YOUTUBE_API_BASE_URL}/playlistItems?part=contentDetails&playlistId=${playlistID}&maxResults=50&key=${process.env.YOUTUBE_API_KEY}`;
-    console.log(playlistUrl);
     return fetch(playlistUrl)
       .then((response: Response) => response.json() as any)
-      .then((data) => data.items as YoutubePlaylistItem[]);
+      .then((data) => data.items as YoutubePlaylistItem[])
   }
 
   // Accounting for two types of youtube urls that could come in

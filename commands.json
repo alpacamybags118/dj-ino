@@ -25,7 +25,7 @@
  },
  {
   "name":"playtrack",
-  "description":"Have DJ Ino play a track in the voice channel he is in",
+  "description":"Have DJ Ino play a track in the voice channel he is in. This supports both individual Youtube URL and Youtube playlist urls.",
   "options":[
      {
         "type":3,

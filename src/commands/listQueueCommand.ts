@@ -1,10 +1,12 @@
 import { IBotCommand, IBotCommandReturn } from "./iBotCommand";
 
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { CommandInteraction} from "discord.js";
+import { CommandInteraction, MessageEmbed} from "discord.js";
 import JukeBox from "../media/jukebox";
 import { TYPES } from "../const/types";
 import { inject, injectable } from "inversify";
+import MessageFormatter from "../utility/messageFormatter";
+import { arrayBuffer } from "stream/consumers";
 
 @injectable()
 export default class ListQueueCommand implements IBotCommand {
@@ -16,19 +18,25 @@ export default class ListQueueCommand implements IBotCommand {
   }
   
   async executeCommand(interaction: CommandInteraction): Promise<void> {
-    const queue = this.jukebox.GetCurrentQueue()
-    let response = '';
+    const queue = this.jukebox.GetCurrentQueue();
 
     if(queue.length == 0) {
-      response = 'Queue is empty!';
+      interaction.reply('Queue is empty!');
     } else {
-      response = 'Current Queue: \n';
-      queue.forEach(track => {
-        response += `${track.url} \n`
+      const messages = queue.map(track => {
+        return MessageFormatter.MakeFormattedDiscordMessage(track.url, track.metadata);
       });
+      interaction.reply('The current queue is listed below');
+      // discord api only lets 10 embedded messages be sent at a time, so need to chunk
+      if (messages.length > 10) {
+        for(let i = 0; i < messages.length; i+= 10) {
+          const chunk = messages.slice(i, i+10);
+          interaction.followUp({embeds: chunk});
+        }
+      } else {
+        interaction.followUp({embeds: messages});
+      }
     }
-
-    interaction.reply(response);
   }
 
   buildCommand(): IBotCommandReturn {

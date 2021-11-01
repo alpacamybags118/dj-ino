@@ -8,6 +8,7 @@ import JukeBox from "../media/jukebox";
 import { TYPES } from "../const/types";
 import Track from "../media/track";
 import YoutubeSearch from "../media/youtubeSearch";
+import { stringify } from "querystring";
 
 @injectable()
 export default class PlayTrackCommand implements IBotCommand {
@@ -28,7 +29,7 @@ export default class PlayTrackCommand implements IBotCommand {
   }
   
   async executeCommand(interaction: CommandInteraction, ): Promise<void> {
-    let url;
+    let url: string;
 
     const connection = getVoiceConnection(interaction.guildId);
 
@@ -45,6 +46,11 @@ export default class PlayTrackCommand implements IBotCommand {
       return;
     }
 
+    if(!url.includes('https://')) {
+      interaction.reply('Provided track is not a valid url!');
+      return;
+    }
+
     this.jukebox.subscribeToJukebox(connection);
 
     if(YoutubeSearch.isPlaylistUrl(url)) {
@@ -58,7 +64,6 @@ export default class PlayTrackCommand implements IBotCommand {
 
     interaction.reply('Adding track to queue.');
     const youtubeTrack = await this.youtubeSearch.getVideoFromUrl(url);
-    console.log(youtubeTrack);
     const track = new Track(youtubeTrack.url, youtubeTrack.metadata, interaction,  this.client.user);
 
     this.jukebox.PlayTrack(track);

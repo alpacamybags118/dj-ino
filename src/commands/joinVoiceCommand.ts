@@ -23,13 +23,11 @@ export default class JoinVoiceCommand implements IBotCommand{
     // todo: how can we tell the bot to disconnect after x minutes on inactivity
     // BUG - if joins voicechat via this command and is manually disconnected, it still considered itself joined in a connection
     const channel = interaction.options.getChannel('channel');
-    console.log(channel)
     const options  = {
       channelId: channel?.id || '',
       guildId: interaction.guildId || '',
       adapterCreator: interaction.guild?.voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator
     }
-
     const connection = joinVoiceChannel(options)
 
     connection.on('stateChange', (oldState: VoiceConnectionState, newState: VoiceConnectionState) => {

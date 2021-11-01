@@ -1,4 +1,5 @@
-import { ClientUser, CommandInteraction } from "discord.js";
+import { ClientUser, CommandInteraction, MessageEmbed } from "discord.js";
+import MessageFormatter from "../utility/messageFormatter";
 import { YoutubeMetadata } from "./youtubeMetadata";
 
 export default class Track {
@@ -22,8 +23,7 @@ export default class Track {
       }
       ]
     })
-    await this.interaction.channel.send(`Playing ${this.metadata.title} \
-    ${this.url}`)
+    await this.interaction.channel.send({ embeds: [ MessageFormatter.MakeFormattedDiscordMessage(this.url, this.metadata) ]});
   }
 
   public async OnEnd(): Promise<void> {
