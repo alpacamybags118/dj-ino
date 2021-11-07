@@ -41,10 +41,10 @@ export default class YoutubeDownloader {
 
 	static async CleanUpAudioResource(): Promise<void> {
 		return new Promise((resolve, reject) => {
-			exec('ps -C youtube-dl -o pid=', (err, stdout, stderr) => {
+			exec('ps -C yt-dlp -o pid=', (err, stdout, stderr) => {
 				if (err) {
 					// not too worried if we error here, but log it
-					console.log(err)
+					console.log(stderr)
 				}
 
 				if(stdout) {
