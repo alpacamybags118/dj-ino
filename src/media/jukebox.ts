@@ -1,5 +1,5 @@
-import { AudioPlayer, AudioPlayerState, AudioPlayerStatus, AudioResource, VoiceConnection } from "@discordjs/voice"
-import { inject, injectable } from "inversify"
+import { AudioPlayer, AudioPlayerError, AudioPlayerState, AudioPlayerStatus, AudioResource, PlayerSubscription, VoiceConnection } from "@discordjs/voice"
+import { ContainerModule, inject, injectable } from "inversify"
 import { TYPES } from "../const/types"
 import Logger from "../utility/logger"
 import Track from "./track"
@@ -27,11 +27,22 @@ export default class JukeBox {
 
     // configure audioplayer lifecycle
     this.audioPlayer.on("stateChange", (oldState: AudioPlayerState, newState: AudioPlayerState)=> {
+      // TODO: need to figure out how we can not run this metadata if we force stop
       if(newState.status == AudioPlayerStatus.Idle && oldState.status != AudioPlayerStatus.Idle) {
         (oldState.resource as AudioResource<Track>).metadata.OnEnd();
         this.PlayNextInQueue();
       }
-    })
+    });
+
+    this.audioPlayer.on('error', (error: AudioPlayerError) => {
+      this.logger.Error(error.message);
+      this.audioPlayer.stop();
+    });
+
+    this.audioPlayer.on('unsubscribe', (listener: PlayerSubscription) => {
+      this.logger.Debug(`Listener unsubscribed`);
+      this.audioPlayer.stop();
+    });
   }
 
   private async PlayNextInQueue(): Promise<void> {
