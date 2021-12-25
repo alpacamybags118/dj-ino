@@ -1,10 +1,10 @@
 
 import { anything, instance, mock, verify, reset, when, resetCalls } from 'ts-mockito';
-import {CacheType, ClientUser, CommandInteraction, TextBasedChannel, TextBasedChannels } from "discord.js";
+import {CacheType, ClientUser, CommandInteraction, TextBasedChannel } from "discord.js";
 import Track from "../../../src/media/track";
 
 let mockInteraction: CommandInteraction<CacheType>= mock<CommandInteraction<CacheType>>();
-let mockChannel: TextBasedChannels = mock(TextBasedChannel)
+let mockChannel: TextBasedChannel = mock<TextBasedChannel>()
 let mockUser: ClientUser = mock(ClientUser);
 
 // hate these stupid mocks
